@@ -82,10 +82,15 @@ public class ClicSie {
         //Identification des fichiers PDF
         RepertoireATraiter repATraiter = new RepertoireATraiter(fc);
 
-        //Vérification de la présence de verso.pdf
-        if(repATraiter.isVersoAtdSieNecessaire() && repATraiter.getVersoAtdSie() == null) {
+        //Vérification de la présence des versos nécessaires
+        Set<String> nomVersosManquants = repATraiter.verifPresenceVerso();
+        if(!nomVersosManquants.isEmpty()) {
+            String message = "";
+            for(String verso : nomVersosManquants) {
+                message += " " + verso;
+            }
             JOptionPane.showMessageDialog(null,
-                    "Le fichier verso.pdf est absent.",
+                    "Le ou les fichiers verso "+ message+ " sont absents.",
                     "Erreur",
                      JOptionPane.ERROR_MESSAGE);
             System.exit(0);
@@ -123,7 +128,7 @@ public class ClicSie {
         //Ecriture des fichiers
         Map<String,List<PageAModifier>> listeFichiers = new HashMap<String, List<PageAModifier>>();
         try {
-            listeFichiers = lotPrepare.ecrit(listeFichiers, MAX_PAGES, repATraiter.getRepertoire(), repATraiter.getVersoAtdSie() ,dateHeure);
+            listeFichiers = lotPrepare.ecrit(listeFichiers, MAX_PAGES, repATraiter, dateHeure);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (DocumentException e) {

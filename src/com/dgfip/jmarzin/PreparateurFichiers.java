@@ -14,7 +14,7 @@ class PreparateurFichiers {
         return lotPrepare;
     }
 
-    private String getCle(String chaine, CTypeDocument typeDocument) {
+    private String getCle(String chaine, TypeDocument typeDocument) {
         String cle = "";
         Pattern pattern = Pattern.compile(typeDocument.getRegexpCle(), Pattern.MULTILINE | Pattern.DOTALL);
         Matcher matcher = pattern.matcher(chaine);
@@ -32,7 +32,7 @@ class PreparateurFichiers {
             jLabel.setText(String.format("Fichiers traités : %d/%d", iFichiers, nbFichiers));
             iFichiers++;
             PdfReader lecteurPdf = fichier.getLecteurPdf();
-            CTypeDocument typeDocument = fichier.getTypeFichier();
+            TypeDocument typeDocument = fichier.getTypeFichier();
             if (typeDocument != null && !typeDocument.getNom().toLowerCase().contains("verso")) {
                 String cle = "";
                 TypeFichierProduit typeFichierProduit = null;

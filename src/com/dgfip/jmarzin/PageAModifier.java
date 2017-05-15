@@ -12,12 +12,12 @@ class PageAModifier {
     private boolean rupture;
     boolean isRupture() { return rupture; }
 
-    private CTypeDocument typeDocument;
-    CTypeDocument getTypeDocument() {
+    private TypeDocument typeDocument;
+    TypeDocument getTypeDocument() {
         return typeDocument;
     }
 
-    PageAModifier (int ipage, CTypeDocument typeDocument, boolean rupture) {
+    PageAModifier (int ipage, TypeDocument typeDocument, boolean rupture) {
         this.ipage = ipage;
         this.typeDocument = typeDocument;
         this.rupture = rupture;

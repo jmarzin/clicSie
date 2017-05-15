@@ -12,8 +12,8 @@ class FichierPdfATraiter {
     private PdfReader lecteurPdf;
     PdfReader getLecteurPdf() { return lecteurPdf;}
 
-    private CTypeDocument typeFichier;
-    CTypeDocument getTypeFichier() { return typeFichier;}
+    private TypeDocument typeFichier;
+    TypeDocument getTypeFichier() { return typeFichier;}
 
     String getChaine(int page) {
         String chaine = "";
@@ -33,7 +33,7 @@ class FichierPdfATraiter {
         }
         String chaine = this.getChaine(1);
         this.typeFichier = null;
-        for(CTypeDocument typeDocument : CTypeDocument.values()) {
+        for(TypeDocument typeDocument : TypeDocument.values()) {
             Pattern pattern = Pattern.compile(typeDocument.getChaineType(), Pattern.MULTILINE | Pattern.DOTALL);
             Matcher matcher = pattern.matcher(chaine);
             if(matcher.matches()) {

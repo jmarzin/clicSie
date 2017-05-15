@@ -30,7 +30,7 @@ class Courrier {
     private TypeActe typeActe;
     private TypeFichierProduit typeFichierProduit;
     private String cle;
-    private Map<CTypeDocument, DocumentAdm> dicoTypesDocument = new HashMap<CTypeDocument, DocumentAdm>();
+    private Map<TypeDocument, DocumentAdm> dicoTypesDocument = new HashMap<TypeDocument, DocumentAdm>();
 
     /**
      * Indicateur d'impression du courrier
@@ -59,34 +59,39 @@ class Courrier {
 
     void verif() {
         if (this.typeFichierProduit == TypeFichierProduit.SousPlis &&
-                dicoTypesDocument.containsKey(CTypeDocument.get("SIE_ATD")) &&
-                !dicoTypesDocument.containsKey(CTypeDocument.get("SIE_ATD_BULLETIN_REPONSE"))) {
+                dicoTypesDocument.containsKey(TypeDocument.get("SIE_ATD")) &&
+                !dicoTypesDocument.containsKey(TypeDocument.get("SIE_ATD_BULLETIN_REPONSE"))) {
             log("L'atd N° " + cle + " n'a pas de bulletin réponse ; il sera envoyé malgré tout.");
         }
         if (this.typeFichierProduit == TypeFichierProduit.SousPlis &&
-                dicoTypesDocument.containsKey(CTypeDocument.get("SIE_ATD_BULLETIN_REPONSE")) &&
-                !dicoTypesDocument.containsKey(CTypeDocument.get("SIE_ATD"))) {
+                dicoTypesDocument.containsKey(TypeDocument.get("SIE_ATD_BULLETIN_REPONSE")) &&
+                !dicoTypesDocument.containsKey(TypeDocument.get("SIE_ATD"))) {
             log("L'atd N° " + cle + " n'a qu'un bulletin réponse ; celui-ci ne sera pas envoyé.");
             this.aImprimer = false;
         }
-        if (dicoTypesDocument.containsKey(CTypeDocument.get("SIE_CVAE_2807")) &&
-                !dicoTypesDocument.containsKey(CTypeDocument.get("SIE_CVAE_RELANCE")) &&
-                !dicoTypesDocument.containsKey(CTypeDocument.get("SIE_CVAE_MAJ5")) &&
-                !dicoTypesDocument.containsKey(CTypeDocument.get("SIE_CVAE_MAJO02"))) {
+        if (dicoTypesDocument.containsKey(TypeDocument.get("SIE_CVAE_2807")) &&
+                !dicoTypesDocument.containsKey(TypeDocument.get("SIE_CVAE_RELANCE")) &&
+                !dicoTypesDocument.containsKey(TypeDocument.get("SIE_CVAE_MAJ5")) &&
+                !dicoTypesDocument.containsKey(TypeDocument.get("SIE_CVAE_MAJO02"))) {
             log("Le 2807 " + cle + " est isolé. Il ne sera pas imprimé");
             this.aImprimer = false;
         }
     }
 
     Map<String, List<PageAModifier>> ecrit(Map<String, List<PageAModifier>> listeFichiers,
-                                           PdfImportedPage versoPdf,
+                                           RepertoireATraiter repertoireATraiter,
                                            PdfSmartCopy copy,
                                            String nomFichier) throws DocumentException, IOException {
-
-        if (!aImprimer) return listeFichiers;
-        CTypeDocument[] typesDoc = typeActe.typeCourriersOrdonnes();
+        assert aImprimer;
+        TypeDocument[] typesDoc = typeActe.typeCourriersOrdonnes();
         for (int i = 0; i < typesDoc.length; i++) {
-            CTypeDocument typedoc = typesDoc[i];
+            TypeDocument typedoc = typesDoc[i];
+            PdfImportedPage versoPdf = null;
+            if(typeFichierProduit == TypeFichierProduit.SousPlis && typedoc.getVersoInsere() != null) {
+                TypeDocument verso = TypeDocument.get(typedoc.getVersoInsere());
+                PdfReader versoFichierPdf = repertoireATraiter.getVersoParNom(verso);
+                versoPdf = copy.getImportedPage(versoFichierPdf,1);
+            }
             if (dicoTypesDocument.containsKey(typedoc)) {
                 DocumentAdm documentAdm = (DocumentAdm) dicoTypesDocument.get(typedoc);
                 List<PageLue> pagesLues = documentAdm.getPages();
@@ -105,10 +110,13 @@ class Courrier {
                     if(rupture || (j == 0 && (typedoc.getRectDest() != null || typedoc.getRectExp() != null))) {
                         listeFichiers.get(nomFichier).add(new PageAModifier(copy.getPageNumber() - 1, typedoc, rupture));
                     }
-                    if (typedoc.isInsereVerso())
-                        if (versoPdf == null) copy.addPage(PageSize.A4, 0);
-                        else
+                    if (typedoc.getVersoInsere() != null) {
+                        if (versoPdf == null) {
+                            copy.addPage(PageSize.A4, 0);
+                        } else {
                             copy.addPage(versoPdf);
+                        }
+                    }
                 }
             }
         }

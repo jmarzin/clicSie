@@ -42,8 +42,7 @@ class FichierProduit {
     }
 
     Map<String, List<PageAModifier>> ecrit(Map<String, List<PageAModifier>> listeFichiers,
-                                                  int MAX_PAGES, File repertoire,
-                                                  PdfReader verso,
+                                                  int MAX_PAGES, RepertoireATraiter repertoireATraiter,
                                                   String dateHeure) throws IOException, DocumentException {
 
         Document doc = new Document();
@@ -52,18 +51,15 @@ class FichierProduit {
         String nomFichier;
         int nbPagesTraitees = 0;
         if (MAX_PAGES == 0 || nbPages <= MAX_PAGES) {
-            nomFichier = repertoire.getCanonicalPath() + File.separatorChar +
+            nomFichier = repertoireATraiter.getRepertoire().getCanonicalPath() + File.separatorChar +
                     typeActe.name() + "__" + typeFichierProduit.name() + "_" + dateHeure + ".pdf";
         } else {
-            nomFichier = repertoire.getCanonicalPath() + File.separatorChar +
+            nomFichier = repertoireATraiter.getRepertoire().getCanonicalPath() + File.separatorChar +
                     typeActe.name() + "__" + typeFichierProduit.name() + "_partie_1_" + dateHeure + ".pdf";
         }
         listeFichiers.put(nomFichier, new ArrayList<PageAModifier>());
         copy = new PdfSmartCopy(doc, new FileOutputStream(nomFichier));
         doc.open();
-        if (typeFichierProduit == TypeFichierProduit.SousPlis) {
-            versoPdf = copy.getImportedPage(verso, 1);
-        }
         int partie = 1;
         Object[] clesTriees = dicoCles.keySet().toArray();
         Arrays.sort(clesTriees);
@@ -71,19 +67,16 @@ class FichierProduit {
             if (MAX_PAGES > 0 && copy.getPageNumber() > MAX_PAGES) {
                 copy.close();
                 partie++;
-                nomFichier = repertoire.getCanonicalPath() + File.separatorChar +
+                nomFichier = repertoireATraiter.getRepertoire().getCanonicalPath() + File.separatorChar +
                         typeActe.name() + "__" + typeFichierProduit.name() + "_partie_" +
                         partie + "_" + dateHeure + ".pdf";
                 listeFichiers.put(nomFichier, new ArrayList<PageAModifier>());
                 copy = new PdfSmartCopy(doc, new FileOutputStream(nomFichier));
                 doc.open();
-                if (typeFichierProduit == TypeFichierProduit.SousPlis) {
-                    versoPdf = copy.getImportedPage(verso, 1);
-                }
             }
             Courrier courrier = dicoCles.get((cle.toString()));
             if(courrier.isaImprimer()) {
-                listeFichiers = courrier.ecrit(listeFichiers, versoPdf, copy, nomFichier);
+                listeFichiers = courrier.ecrit(listeFichiers, repertoireATraiter, copy, nomFichier);
                 nbPagesTraitees += courrier.getNbPages();
                 jLabel.setText(String.format("Pages %s traitées %s : %d/%d",
                         typeActe.name(), typeFichierProduit.name(), nbPagesTraitees, nbPages));

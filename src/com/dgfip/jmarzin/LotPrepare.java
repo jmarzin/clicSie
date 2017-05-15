@@ -39,11 +39,10 @@ public class LotPrepare {
     }
 
     Map<String, List<PageAModifier>> ecrit(Map<String, List<PageAModifier>> listeFichiers,
-                                           int MAX_PAGES, File repertoire,
-                                           PdfReader verso,
+                                           int MAX_PAGES, RepertoireATraiter repertoireATraiter,
                                            String dateHeure) throws IOException, DocumentException {
         for (LotParActe lotParActe : dicoTypesActe.values()) {
-            listeFichiers = lotParActe.ecrit(listeFichiers, MAX_PAGES, repertoire, verso, dateHeure);
+            listeFichiers = lotParActe.ecrit(listeFichiers, MAX_PAGES, repertoireATraiter, dateHeure);
         }
         return listeFichiers;
     }

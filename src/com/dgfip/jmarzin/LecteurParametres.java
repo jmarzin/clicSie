@@ -4,7 +4,6 @@ import com.itextpdf.text.Rectangle;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -63,7 +62,7 @@ public class LecteurParametres {
             Yaml yaml = new Yaml();
             for(String instance : parametres) {
                 Object objet = yaml.load(instance);
-                CTypeDocument cT = (CTypeDocument)objet;
+                TypeDocument cT = (TypeDocument)objet;
                 if(cT.getAdresseDest() != null) {
                     LinkedHashMap<String, LinkedHashMap<String, Double>> adresse = (LinkedHashMap<String, LinkedHashMap<String, Double>>) cT.getAdresseDest();
                     Rectangle rect = new Rectangle(adresse.get("basGauche").get("x").floatValue(),
@@ -80,7 +79,7 @@ public class LecteurParametres {
                             adresse.get("hautDroite").get("y").floatValue());
                     cT.setAdresseExp(rect);
                 }
-                Map<String,CTypeDocument> dico = CTypeDocument.getDico();
+                Map<String,TypeDocument> dico = TypeDocument.getDico();
                 dico.put(cT.getNom(),cT);
             }
             try {

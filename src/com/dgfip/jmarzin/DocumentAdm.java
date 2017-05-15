@@ -63,16 +63,16 @@ class DocumentAdm {
 
     /**
      * Le type du document admnistratif
-     * @see CTypeDocument, #getTypeDocument()
+     * @see TypeDocument , #getTypeDocument()
      */
-    private CTypeDocument typeDocument = null;
+    private TypeDocument typeDocument = null;
 
     /**
      * Met à jour le type de document, et
      * le type d'acte qui le génère
      * @param typeDocument nouveau type du document
      */
-    void setTypeDocument(CTypeDocument typeDocument) {
+    void setTypeDocument(TypeDocument typeDocument) {
         this.typeDocument = typeDocument;
         this.typeActe = typeDocument.getTypeActe();
     }
@@ -81,7 +81,7 @@ class DocumentAdm {
      *
      * @return le type du document
      */
-    CTypeDocument getTypeDocument() {
+    TypeDocument getTypeDocument() {
         return typeDocument;
     }
 
@@ -127,7 +127,7 @@ class DocumentAdm {
      * Crée un document vide du type fourni
      * @param typeDocument type du document
      */
-    DocumentAdm (CTypeDocument typeDocument) {
+    DocumentAdm (TypeDocument typeDocument) {
         this.typeDocument = typeDocument;
         this.typeActe = typeDocument.getTypeActe();
         this.pages = new ArrayList<PageLue>();
@@ -139,7 +139,7 @@ class DocumentAdm {
      * @param typeDocument type de document
      * @param pageLue page lue
      */
-    DocumentAdm (CTypeDocument typeDocument, PageLue pageLue) {
+    DocumentAdm (TypeDocument typeDocument, PageLue pageLue) {
         this(typeDocument);
         ajout(pageLue);
     }

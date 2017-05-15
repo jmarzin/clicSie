@@ -5,14 +5,14 @@ import com.itextpdf.text.pdf.PdfReader;
 import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.dgfip.jmarzin.ClicSie.jLabel;
+import static com.dgfip.jmarzin.ClicSie.log;
 
 class RepertoireATraiter {
-
-    private boolean versoAtdSieNecessaire = false;
-    boolean isVersoAtdSieNecessaire() { return versoAtdSieNecessaire;}
 
     private File repertoire;
     File getRepertoire() { return repertoire;}
@@ -23,14 +23,33 @@ class RepertoireATraiter {
     private List<String> fichiersADeplacer = new ArrayList<String>();
     List<String> getFichiersADeplacer() { return fichiersADeplacer;}
 
-    private PdfReader versoAtdSie = null;
-    PdfReader getVersoAtdSie() { return versoAtdSie;}
-
     private boolean exclus(String nomFichier) {
         for(TypeActe typeActe : TypeActe.values()) {
             if (nomFichier.startsWith(typeActe.name() + "__")) return true;
         }
         return false;
+    }
+
+    Set<String> verifPresenceVerso() {
+        Set<String> listeTypesDocument = new HashSet<String>();
+        Set<String> listeVersosManquants = new HashSet<String>();
+        for (FichierPdfATraiter fichier : fichiersPdf) {
+            listeTypesDocument.add(fichier.getTypeFichier().getNom());
+        }
+        for(String type : listeTypesDocument) {
+            String nomVerso = TypeDocument.get(type).getVersoInsere();
+            if(nomVerso != null && !listeTypesDocument.contains(nomVerso)) {
+                    listeVersosManquants.add(nomVerso);
+            }
+        }
+        return listeVersosManquants;
+    }
+
+    PdfReader getVersoParNom(TypeDocument typeDocument) {
+        for(FichierPdfATraiter fic : fichiersPdf) {
+            if (fic.getTypeFichier() == typeDocument) return fic.getLecteurPdf();
+        }
+        return null;
     }
 
     RepertoireATraiter(JFileChooser fc) {
@@ -42,16 +61,17 @@ class RepertoireATraiter {
             jLabel.setText((i+1) + " fichier(s) traité()s");
             if(!exclus(listeFichiers[i].getName())) {
                 FichierPdfATraiter fic = new FichierPdfATraiter(listeFichiers[i]);
-                this.fichiersPdf.add(fic);
-                if(ClicSie.getEnsembleEvenements().contains(TypeActe.SIE_ATD)) versoAtdSieNecessaire = true;
-                CTypeDocument typeFichier = fic.getTypeFichier();
-                if (typeFichier == CTypeDocument.get("SIE_ATD_VERSO")) { //;"Verso") {
-                    this.versoAtdSie = fic.getLecteurPdf();
-                } else if (typeFichier != null) {
-                    this.fichiersADeplacer.add(listeFichiers[i].getName());
+                if (fic.getTypeFichier() == null) {
+                    log(String.format("Le fichier %s n'est pas reconnu !", listeFichiers[i].getName()));
+                } else {
+                    this.fichiersPdf.add(fic);
+                    TypeDocument typeFichier = fic.getTypeFichier();
+                    if (!typeFichier.isVerso()) { //;"Verso") {
+                        this.fichiersADeplacer.add(listeFichiers[i].getName());
+                    }
                 }
             } else {
-                this.fichiersADeplacer.add(listeFichiers[i].getName());
+                    this.fichiersADeplacer.add(listeFichiers[i].getName());
             }
         }
     }

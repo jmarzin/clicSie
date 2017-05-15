@@ -1,180 +1,227 @@
-//package com.dgfip.jmarzin;
-//
-//import com.itextpdf.text.Rectangle;
-//
-//public enum TypeDocument {
-//    SIE_ATD(TypeActe.SIE_ATD,
-//            0,
-//            new Rectangle( 30, 842-92,170,842-44),
-//            false,
-//            new Rectangle(270f,662f,500f,742f),
-//            true,
-//            ".*N° 3735 Original.*",
-//            ".*\\nN° (?:ATD) : (\\d+)\\n.*",
-//            "",
-//            "N° 3735 Ampliation",
-//            "N° 3735 Original",
-//            false,
-//            true,
-//            true),
-//    SIE_ATD_NOTIFICATION(TypeActe.SIE_ATD,
-//            0,
-//            new Rectangle( 30, 842-92,170,842-44),
-//            false,
-//            new Rectangle(270f,662f,500f,742f),
-//            true,
-//            ".*N° 3738 Original.*",
-//            ".*\\nN° (?:de la notification) : (\\d+)\\n.*",
-//            "Notif",
-//            "N° 3738 Ampliation",
-//            "N° 3738 Original",
-//            true,
-//            true,
-//            true),
-//    SIE_ATD_VERSO(null,
-//            0,
-//            null,
-//            false,
-//            null,
-//            false,
-//            ".*ATD-MIRIAM-SP.*",
-//            null,
-//            null,
-//            null,
-//            null,
-//            false,
-//            true,
-//            false),
-//    SIE_ATD_BULLETIN_REPONSE(TypeActe.SIE_ATD,
-//            0,
-//            null,
-//            false,
-//            null,
-//            false,
-//            ".*BULLETIN-REPONSE A L'AVIS A TIERS DETENTEUR.*",
-//            ".*\\nN° (?:ATD) : (\\d+)\\n.*",
-//            SIE_ATD.prefixeCle(),
-//            "BULLETIN-REPONSE A L'AVIS A TIERS DETENTEUR",
-//            null,
-//            false,
-//            true,
-//            false),
-//    SIE_CVAE_2807(TypeActe.SIE_CVAE_RELANCE,
-//            270,
-//            null,
-//            false,
-//            null,
-//            false,
-//            ".*RESULTATS? (?:DE )?COMPARAISON CVAE.*",
-//            ".*SIRET : (\\d{9} *\\d{5}).*",
-//            "Siret",
-//            "ETAT 2807",
-//            null,
-//            false,
-//            true,
-//            false),
-//    SIE_CVAE_RELANCE(TypeActe.SIE_CVAE_RELANCE,
-//            0,
-//            null,
-//            false,
-//            null,
-//            false,
-//            ".*1329RL.*",
-//            SIE_CVAE_2807.regexpCle(),
-//            SIE_CVAE_2807.prefixeCle(),
-//            "1329RL",
-//            null,
-//            true,
-//            true,
-//            false),
-//    SIE_CVAE_MAJO02(TypeActe.SIE_CVAE_RELANCE,
-//            0,
-//            null,
-//            false,
-//            null,
-//            false,
-//            ".*1329 TL.*",
-//            SIE_CVAE_2807.regexpCle(),
-//            SIE_CVAE_2807.prefixeCle(),
-//            "1329TL",
-//            null,
-//            true,
-//            true,
-//            false),
-//    SIE_CVAE_MAJ5(TypeActe.SIE_CVAE_RELANCE,
-//            0,
-//            null,
-//            false,
-//            null,
-//            false,
-//            ".*1329MO.*",
-//            SIE_CVAE_2807.regexpCle(),
-//            SIE_CVAE_2807.prefixeCle(),
-//            "1329MO",
-//            null,
-//            true,
-//            true,
-//            false);
-//
-//    private final TypeActe typeActe;
-//    private int rotation;
-//    private final Rectangle rectExp;
-//    private final boolean deleteExp;
-//    private final Rectangle rectDest;
-//    private final boolean deleteDest;
-//    private final String chaineType;
-//    private final String regexpCle;
-//    private final String prefixeCle;
-//    private final String chaineSousPlis;
-//    private final String chaineService;
-//    private final boolean plusieursPages;
-//    private final boolean pageImpaire;
-//    private final boolean insereVerso;
-//
-//    TypeDocument(TypeActe typeActe,
-//                 int rotation,
-//                 Rectangle rectExp,
-//                 boolean deleteExp,
-//                 Rectangle rectDest,
-//                 boolean deleteDest,
-//                 String chaineType,
-//                 String regexpCle,
-//                 String prefixeCle,
-//                 String chaineSousPlis,
-//                 String chaineService,
-//                 boolean plusieursPages,
-//                 boolean pageImpaire,
-//                 boolean insereVerso) {
-//
-//        this.typeActe = typeActe;
-//        this.rotation = rotation;
-//        this.rectExp = rectExp;
-//        this.deleteExp = deleteExp;
-//        this.rectDest = rectDest;
-//        this.deleteDest = deleteDest;
-//        this.chaineType = chaineType;
-//        this.regexpCle = regexpCle;
-//        this.prefixeCle = prefixeCle;
-//        this.chaineSousPlis = chaineSousPlis;
-//        this.chaineService = chaineService;
-//        this.plusieursPages = plusieursPages;
-//        this.pageImpaire = pageImpaire;
-//        this.insereVerso = insereVerso;
-//        new CTypeDocument(this.name(),typeActe, rotation, rectExp, deleteExp, rectDest, deleteDest, chaineType, regexpCle,
-//                prefixeCle, chaineSousPlis, chaineService, plusieursPages, pageImpaire, insereVerso);
-//    }
-//    private final TypeActe typeActe() { return typeActe;}
-//    private final int rotation() { return rotation;}
-//    private final Rectangle rectExp() { return rectExp;}
-//    private final boolean deleteExp() { return deleteExp;}
-//    private final Rectangle rectDest() { return rectDest;}
-//    private final boolean deleteDest() { return deleteDest;}
-//    private final String chaineType() { return chaineType;}
-//    private final String regexpCle() { return regexpCle;}
-//    private final String prefixeCle() { return prefixeCle;}
-//    private final String chaineSousPlis() { return chaineSousPlis;}
-//    private final String chaineService() { return chaineService;}
-//    private final boolean plusieursPages() { return plusieursPages;}
-//    private final boolean pageImpaire() { return pageImpaire;}
-//    private final boolean isInsereVerso() { return insereVerso;}
-//}
+package com.dgfip.jmarzin;
+
+import com.itextpdf.text.Rectangle;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by jmarzin-cp on 13/05/2017.
+ */
+public class TypeDocument {
+
+    public Object getAdresseDest() {
+        return adresseDest;
+    }
+
+    public void setAdresseDest(Object adresseDest) {
+        this.adresseDest = adresseDest;
+    }
+
+    private Object adresseDest;
+
+    public Object getAdresseExp() {
+        return adresseExp;
+    }
+
+    public void setAdresseExp(Object adresseExp) {
+        this.adresseExp = adresseExp;
+    }
+
+    private Object adresseExp;
+
+    private static Map<String,TypeDocument> dico = new HashMap<String, TypeDocument>();
+
+    public static Map<String, TypeDocument> getDico() {
+        return dico;
+    }
+
+    public static void setDico(Map<String, TypeDocument> dico) {
+        TypeDocument.dico = dico;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public TypeActe getTypeActe() {
+        return typeActe;
+    }
+
+    public void setTypeActe(TypeActe typeActe) {
+        this.typeActe = typeActe;
+    }
+
+    public int getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(int rotation) {
+        this.rotation = rotation;
+    }
+
+    public Rectangle getRectExp() {
+        return rectExp;
+    }
+
+    public void setRectExp(Rectangle rectExp) {
+        this.rectExp = rectExp;
+    }
+
+    public boolean isDeleteExp() {
+        return deleteExp;
+    }
+
+    public void setDeleteExp(boolean deleteExp) {
+        this.deleteExp = deleteExp;
+    }
+
+    public Rectangle getRectDest() {
+        return rectDest;
+    }
+
+    public void setRectDest(Rectangle rectDest) {
+        this.rectDest = rectDest;
+    }
+
+    public boolean isDeleteDest() {
+        return deleteDest;
+    }
+
+    public void setDeleteDest(boolean deleteDest) {
+        this.deleteDest = deleteDest;
+    }
+
+    public String getChaineType() {
+        return chaineType;
+    }
+
+    public void setChaineType(String chaineType) {
+        this.chaineType = chaineType;
+    }
+
+    public String getRegexpCle() {
+        return regexpCle;
+    }
+
+    public void setRegexpCle(String regexpCle) {
+        this.regexpCle = regexpCle;
+    }
+
+    public String getPrefixeCle() {
+        return prefixeCle;
+    }
+
+    public void setPrefixeCle(String prefixeCle) {
+        this.prefixeCle = prefixeCle;
+    }
+
+    public String getChaineSousPlis() {
+        return chaineSousPlis;
+    }
+
+    public void setChaineSousPlis(String chaineSousPlis) {
+        this.chaineSousPlis = chaineSousPlis;
+    }
+
+    public String getChaineService() {
+        return chaineService;
+    }
+
+    public void setChaineService(String chaineService) {
+        this.chaineService = chaineService;
+    }
+
+    public boolean isPlusieursPages() {
+        return plusieursPages;
+    }
+
+    public void setPlusieursPages(boolean plusieursPages) {
+        this.plusieursPages = plusieursPages;
+    }
+
+    public boolean isPageImpaire() {
+        return pageImpaire;
+    }
+
+    public void setPageImpaire(boolean pageImpaire) {
+        this.pageImpaire = pageImpaire;
+    }
+
+    private String nom;
+    private TypeActe typeActe;
+    private int rotation;
+    private Rectangle rectExp;
+    private boolean deleteExp;
+    private Rectangle rectDest;
+    private boolean deleteDest;
+    private String chaineType;
+    private String regexpCle;
+    private String prefixeCle;
+    private String chaineSousPlis;
+    private String chaineService;
+    private boolean plusieursPages;
+    private boolean pageImpaire;
+
+
+    public String getVersoInsere() {
+        return versoInsere;
+    }
+
+    public void setVersoInsere(String versoInsere) {
+        this.versoInsere = versoInsere;
+    }
+
+    private String versoInsere;
+
+    TypeDocument(){
+    }
+
+    TypeDocument(String nom,
+                 TypeActe typeActe, int rotation, Rectangle rectExp,
+                 boolean deleteExp, Rectangle rectDest, boolean deleteDest,
+                 String chaineType, String regexpCle, String prefixeCle,
+                 String chaineSousPlis, String chaineService,
+                 boolean plusieursPages, boolean pageImpaire,
+                 String versoInsere) {
+        this.nom = nom;
+        this.typeActe = typeActe;
+        this.rotation = rotation;
+        this.rectExp = rectExp;
+        this.deleteExp = deleteExp;
+        this.rectDest = rectDest;
+        this.deleteDest = deleteDest;
+        this.chaineType = chaineType;
+        this.regexpCle = regexpCle;
+        this.prefixeCle = prefixeCle;
+        this.chaineSousPlis = chaineSousPlis;
+        this.chaineService = chaineService;
+        this.plusieursPages = plusieursPages;
+        this.pageImpaire = pageImpaire;
+        this.versoInsere = versoInsere;
+        dico.put(nom, this);
+    }
+
+    static TypeDocument get(String nom){
+        assert (dico.containsKey(nom));
+        return dico.get(nom);
+    }
+
+    boolean isVerso() {
+        for(TypeDocument type : values()) {
+            if(type.getVersoInsere() != null && type.getVersoInsere().equals(nom)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static Collection<TypeDocument> values() {
+        return dico.values();
+    }
+}
