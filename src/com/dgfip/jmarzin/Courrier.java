@@ -3,6 +3,7 @@ package com.dgfip.jmarzin;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.*;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -95,6 +96,7 @@ class Courrier {
             if (dicoTypesDocument.containsKey(typedoc)) {
                 DocumentAdm documentAdm = (DocumentAdm) dicoTypesDocument.get(typedoc);
                 List<PageLue> pagesLues = documentAdm.getPages();
+
                 for (int j = 0; j < pagesLues.size(); j++) { //PageLue pageLue: courrier.get(typedoc)) {
                     PageLue pageLue = pagesLues.get(j);
                     PdfDictionary pageP = pageLue.getLecteurPdf().getPageN(pageLue.getIpage());

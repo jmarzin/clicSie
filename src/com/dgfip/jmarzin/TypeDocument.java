@@ -2,6 +2,7 @@ package com.dgfip.jmarzin;
 
 import com.itextpdf.text.Rectangle;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,18 @@ public class TypeDocument {
         this.adresseDest = adresseDest;
     }
 
-    private Object adresseDest;
+    private Object adresseDest = null;
+
+    public Object getPlaceDate() {
+        return placeDate;
+    }
+
+    public void setPlaceDate(Object placeDate) {
+        this.placeDate = placeDate;
+    }
+
+    private Object placeDate = null;
+
 
     public Object getAdresseExp() {
         return adresseExp;
@@ -29,7 +41,7 @@ public class TypeDocument {
         this.adresseExp = adresseExp;
     }
 
-    private Object adresseExp;
+    private Object adresseExp = null;
 
     private static Map<String,TypeDocument> dico = new HashMap<String, TypeDocument>();
 
@@ -155,18 +167,38 @@ public class TypeDocument {
 
     private String nom;
     private TypeActe typeActe;
-    private int rotation;
+
+    public String getNomTypeActe() {
+        return nomTypeActe;
+    }
+
+    public void setNomTypeActe(String nomTypeActe) {
+        this.nomTypeActe = nomTypeActe;
+        this.typeActe = TypeActe.get(nomTypeActe);
+    }
+
+    private String nomTypeActe;
+    public int getRangTypeActe() {
+        return rangTypeActe;
+    }
+
+    public void setRangTypeActe(int rangTypeActe) {
+        this.rangTypeActe = rangTypeActe;
+    }
+
+    private int rangTypeActe = 1;
+    private int rotation = 0;
     private Rectangle rectExp;
-    private boolean deleteExp;
+    private boolean deleteExp = false;
     private Rectangle rectDest;
-    private boolean deleteDest;
+    private boolean deleteDest = false;
     private String chaineType;
     private String regexpCle;
     private String prefixeCle;
-    private String chaineSousPlis;
-    private String chaineService;
-    private boolean plusieursPages;
-    private boolean pageImpaire;
+    private String chaineSousPlis = "";
+    private String chaineService = null;
+    private boolean plusieursPages = false;
+    private boolean pageImpaire = true;
 
 
     public String getVersoInsere() {
@@ -183,7 +215,7 @@ public class TypeDocument {
     }
 
     TypeDocument(String nom,
-                 TypeActe typeActe, int rotation, Rectangle rectExp,
+                 TypeActe typeActe, int rangTypeActe, int rotation, Rectangle rectExp,
                  boolean deleteExp, Rectangle rectDest, boolean deleteDest,
                  String chaineType, String regexpCle, String prefixeCle,
                  String chaineSousPlis, String chaineService,
@@ -191,6 +223,7 @@ public class TypeDocument {
                  String versoInsere) {
         this.nom = nom;
         this.typeActe = typeActe;
+        this.rangTypeActe = rangTypeActe;
         this.rotation = rotation;
         this.rectExp = rectExp;
         this.deleteExp = deleteExp;
@@ -220,7 +253,6 @@ public class TypeDocument {
         }
         return false;
     }
-
     static Collection<TypeDocument> values() {
         return dico.values();
     }

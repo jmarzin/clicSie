@@ -20,6 +20,11 @@ class Clicesiplus {
     private Font ocr10;
     private List<PdfCleanUpLocation> cleanUpLocations = new ArrayList<PdfCleanUpLocation>();
     private PdfStamper stamper;
+
+    public PdfReader getLecteurPdf() {
+        return lecteurPdf;
+    }
+
     private PdfReader lecteurPdf;
 
     private int nbTotalPages;

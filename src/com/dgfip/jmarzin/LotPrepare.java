@@ -1,13 +1,10 @@
 package com.dgfip.jmarzin;
 
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfReader;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.dgfip.jmarzin.ClicSie.jLabel;
 import static com.dgfip.jmarzin.ClicSie.log;
@@ -39,10 +36,10 @@ public class LotPrepare {
     }
 
     Map<String, List<PageAModifier>> ecrit(Map<String, List<PageAModifier>> listeFichiers,
-                                           int MAX_PAGES, RepertoireATraiter repertoireATraiter,
+                                           RepertoireATraiter repertoireATraiter,
                                            String dateHeure) throws IOException, DocumentException {
         for (LotParActe lotParActe : dicoTypesActe.values()) {
-            listeFichiers = lotParActe.ecrit(listeFichiers, MAX_PAGES, repertoireATraiter, dateHeure);
+            listeFichiers = lotParActe.ecrit(listeFichiers, repertoireATraiter, dateHeure);
         }
         return listeFichiers;
     }
@@ -63,6 +60,7 @@ public class LotPrepare {
             }
         } else {
             Clicesiplus clic = new Clicesiplus(nomFichier);
+
             for (PageAModifier page : pages) {
                 int i = page.getIpage();
                 String[] texte1 = null;

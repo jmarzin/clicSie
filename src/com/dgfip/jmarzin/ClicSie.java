@@ -2,10 +2,6 @@ package com.dgfip.jmarzin;
 
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.Rectangle;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
-import sun.awt.image.ImageWatched;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,15 +14,15 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ClicSie {
 
-    private static Set<TypeActe> ensembleEvenements = new TreeSet<TypeActe>();
+    private static Set<TypeActe> ensembleEvenements = new HashSet<TypeActe>();
     static Set<TypeActe> getEnsembleEvenements() {
         return ensembleEvenements;
     }
     static void addEnsembleEvenements(TypeActe typeActe) {
         ensembleEvenements.add(typeActe);
     }
+
     //limite de pages
-    private static final int MAX_PAGES = 1000;
     static JLabel jLabel = new JLabel("Demande du répertoire"); // champ d'affichage des étapes
     private static JTextArea display = new JTextArea(16, 60);  // champ d'affichage de la log
 
@@ -58,7 +54,7 @@ public class ClicSie {
 
         //Date-heure
         Date now = Calendar.getInstance().getTime();
-        SimpleDateFormat formatDateHeure = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss-SSS");
+        SimpleDateFormat formatDateHeure = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-SSS");
         String dateHeure = formatDateHeure.format(now);
 
         //Choix du répertoire
@@ -128,7 +124,7 @@ public class ClicSie {
         //Ecriture des fichiers
         Map<String,List<PageAModifier>> listeFichiers = new HashMap<String, List<PageAModifier>>();
         try {
-            listeFichiers = lotPrepare.ecrit(listeFichiers, MAX_PAGES, repATraiter, dateHeure);
+            listeFichiers = lotPrepare.ecrit(listeFichiers, repATraiter, dateHeure);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (DocumentException e) {
@@ -163,8 +159,15 @@ public class ClicSie {
         //Appel de clic'esi plus
         if(clicEsi){
             for (String nomFichier: listeFichiers.keySet()) {
+                jLabel.setText(String.format("Transformation du fichier %s", nomFichier));
+                int numeroMethode;
+                if(listeFichiers.get(nomFichier).get(0).getTypeDocument().getTypeActe().isUtiliseLO()) {
+                    numeroMethode = 1;
+                } else {
+                    numeroMethode = 2;
+                }
                 try {
-                    lotPrepare.clicEsi(nomFichier, 2,listeFichiers.get(nomFichier));
+                    lotPrepare.clicEsi(nomFichier, numeroMethode,listeFichiers.get(nomFichier));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (DocumentException e) {

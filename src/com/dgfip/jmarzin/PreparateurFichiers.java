@@ -19,7 +19,7 @@ class PreparateurFichiers {
         Pattern pattern = Pattern.compile(typeDocument.getRegexpCle(), Pattern.MULTILINE | Pattern.DOTALL);
         Matcher matcher = pattern.matcher(chaine);
         if (matcher.matches()) {
-            cle = typeDocument.getTypeActe().name() + "_" + typeDocument.getPrefixeCle() + matcher.group(1);
+            cle = typeDocument.getTypeActe().getNom() + "_" + typeDocument.getPrefixeCle() + matcher.group(1);
         }
         return cle.replaceAll(" ", "");
     }

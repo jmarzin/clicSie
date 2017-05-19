@@ -25,7 +25,7 @@ class RepertoireATraiter {
 
     private boolean exclus(String nomFichier) {
         for(TypeActe typeActe : TypeActe.values()) {
-            if (nomFichier.startsWith(typeActe.name() + "__")) return true;
+            if (nomFichier.startsWith(typeActe.getNom() + "__")) return true;
         }
         return false;
     }

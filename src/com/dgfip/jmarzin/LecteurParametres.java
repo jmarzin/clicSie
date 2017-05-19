@@ -62,25 +62,31 @@ public class LecteurParametres {
             Yaml yaml = new Yaml();
             for(String instance : parametres) {
                 Object objet = yaml.load(instance);
-                TypeDocument cT = (TypeDocument)objet;
-                if(cT.getAdresseDest() != null) {
-                    LinkedHashMap<String, LinkedHashMap<String, Double>> adresse = (LinkedHashMap<String, LinkedHashMap<String, Double>>) cT.getAdresseDest();
-                    Rectangle rect = new Rectangle(adresse.get("basGauche").get("x").floatValue(),
-                            adresse.get("basGauche").get("y").floatValue(),
-                            adresse.get("hautDroite").get("x").floatValue(),
-                            adresse.get("hautDroite").get("y").floatValue());
-                    cT.setRectDest(rect);
+                if(objet.getClass() == TypeActe.class) {
+                    TypeActe cT = (TypeActe) objet;
+                    Map<String, TypeActe> dicoA = TypeActe.getDico();
+                    dicoA.put(cT.getNom(), cT);
+                } else {
+                    TypeDocument cT = (TypeDocument) objet;
+                    if (cT.getAdresseDest() != null) {
+                        LinkedHashMap<String, LinkedHashMap<String, Double>> adresse = (LinkedHashMap<String, LinkedHashMap<String, Double>>) cT.getAdresseDest();
+                        Rectangle rect = new Rectangle(adresse.get("basGauche").get("x").floatValue()*72f/25.4f,
+                                842f - adresse.get("basGauche").get("y").floatValue()*72f/25.4f,
+                                adresse.get("hautDroite").get("x").floatValue()*72f/25.4f,
+                                842f - adresse.get("hautDroite").get("y").floatValue()*72f/25.4f);
+                        cT.setRectDest(rect);
+                    }
+                    if (cT.getAdresseExp() != null) {
+                        LinkedHashMap<String, LinkedHashMap<String, Double>> adresse = (LinkedHashMap<String, LinkedHashMap<String, Double>>) cT.getAdresseExp();
+                        Rectangle rect = new Rectangle(adresse.get("basGauche").get("x").floatValue()*72f/25.4f,
+                                842f - adresse.get("basGauche").get("y").floatValue()*72f/25.4f,
+                                adresse.get("hautDroite").get("x").floatValue()*72f/25.4f,
+                                842f - adresse.get("hautDroite").get("y").floatValue()*72f/25.4f);
+                        cT.setRectExp(rect);
+                    }
+                    Map<String, TypeDocument> dicoD = TypeDocument.getDico();
+                    dicoD.put(cT.getNom(), cT);
                 }
-                if(cT.getAdresseExp() != null) {
-                    LinkedHashMap<String, LinkedHashMap<String, Double>> adresse = (LinkedHashMap<String, LinkedHashMap<String, Double>>) cT.getAdresseExp();
-                    Rectangle rect = new Rectangle(adresse.get("basGauche").get("x").floatValue(),
-                            adresse.get("basGauche").get("y").floatValue(),
-                            adresse.get("hautDroite").get("x").floatValue(),
-                            adresse.get("hautDroite").get("y").floatValue());
-                    cT.setAdresseExp(rect);
-                }
-                Map<String,TypeDocument> dico = TypeDocument.getDico();
-                dico.put(cT.getNom(),cT);
             }
             try {
                 bufferedReader.close();
