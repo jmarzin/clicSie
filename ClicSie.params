@@ -1,0 +1,112 @@
+﻿--- !!com.dgfip.jmarzin.TypeActe
+nom: SIE_ATD
+utiliseLO: true
+maxPages: 400
+--- !!com.dgfip.jmarzin.TypeActe
+nom: SIE_CVAE_RELANCE
+maxPages: 1000
+--- !!com.dgfip.jmarzin.TypeDocument
+nom: SIE_CVAE_RELANCE
+nomTypeActe: SIE_CVAE_RELANCE
+rangTypeActe: 1
+chaineType: .*1329RL.*
+regexpCle: '.*SIRET : (\d{9} *\d{5}).*'
+chaineSousPlis: 1329RL
+plusieursPages: true
+placeDate:
+  x: 157.0
+  y: 104.5
+placeSignature:
+  x: 104.0
+  y: 225.0
+--- !!com.dgfip.jmarzin.TypeDocument
+chaineService: 'N° 3738 Original'
+chaineSousPlis: 'N° 3738 Ampliation'
+chaineType: .*N. 3738 Original.*
+deleteDest: true
+versoInsere: SIE_ATD_VERSO
+nom: SIE_ATD_NOTIFICATION
+plusieursPages: true
+adresseDest:
+  basGauche:
+    y: 60.0
+    x: 99.0
+  hautDroite:
+    x: 176.0
+    y: 40.0
+adresseExp:
+  basGauche:
+    y: 32.5
+    x: 10.5
+  hautDroite:
+    x: 60.0
+    y: 15.5
+regexpCle: '.*\nN. (?:de la notification) : (\d+)\n.*'
+nomTypeActe: SIE_ATD
+rangTypeActe: 3
+--- !!com.dgfip.jmarzin.TypeDocument
+chaineSousPlis: 1329MO
+chaineType: .*1329MO.*
+nom: SIE_CVAE_MAJ5
+plusieursPages: true
+regexpCle: '.*SIRET : (\d{9} *\d{5}).*'
+nomTypeActe: SIE_CVAE_RELANCE
+rangTypeActe: 2
+placeDate:
+  x: 157.0
+  y: 112.0
+--- !!com.dgfip.jmarzin.TypeDocument
+chaineSousPlis: 1329 TL
+chaineType: .*1329 TL.*
+nom: SIE_CVAE_MAJO02
+plusieursPages: true
+regexpCle: '.*SIRET : (\d{9} *\d{5}).*'
+nomTypeActe: SIE_CVAE_RELANCE
+rangTypeActe: 3
+placeDate:
+  x: 155.0
+  y: 110.5
+--- !!com.dgfip.jmarzin.TypeDocument
+chaineSousPlis: ETAT 2807
+chaineType: '.*RESULTATS? (?:DE )?COMPARAISON CVAE.*'
+nom: SIE_CVAE_2807
+regexpCle: '.*SIRET : (\d{9} *\d{5}).*'
+rotation: 270
+nomTypeActe: SIE_CVAE_RELANCE
+rangTypeActe: 4
+--- !!com.dgfip.jmarzin.TypeDocument
+chaineSousPlis: BULLETIN-REPONSE A L'AVIS A TIERS DETENTEUR
+chaineType: .*BULLETIN-REPONSE A L'AVIS A TIERS DETENTEUR.*
+nom: SIE_ATD_BULLETIN_REPONSE
+regexpCle: '.*\nN. ATD : (\d+)\n.*'
+nomTypeActe: SIE_ATD
+rangTypeActe: 2
+--- !!com.dgfip.jmarzin.TypeDocument
+chaineService: ' 3735 Original'
+chaineSousPlis: ' 3735 Ampliation'
+chaineType: .*N. 3735 Original.*
+deleteDest: true
+versoInsere: SIE_ATD_VERSO
+nom: SIE_ATD
+adresseDest:
+  basGauche:
+    x: 99.0
+    y: 65.0
+  hautDroite:
+    x: 190.0
+    y: 40.0
+  useVariableBorders: false}
+adresseExp:
+  basGauche:
+    x: 10.5
+    y: 33.0
+  hautDroite:
+    x: 83.0
+    y: 15.0
+regexpCle: '.*\nN. (?:ATD) : (\d+)\n.*'
+nomTypeActe: SIE_ATD
+rangTypeActe: 1
+--- !!com.dgfip.jmarzin.TypeDocument
+chaineType: .*ATD-MIRIAM-SP.*
+nom: SIE_ATD_VERSO
+pageImpaire: false

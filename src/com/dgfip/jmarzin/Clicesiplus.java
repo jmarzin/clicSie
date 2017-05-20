@@ -11,15 +11,24 @@ import com.itextpdf.text.pdf.pdfcleanup.PdfCleanUpProcessor;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.List;
 
 class Clicesiplus {
+    private Font arial4;
     private Font arial6;
     private Font arial8;
+    private Font arial10;
     private Font ocr10;
     private List<PdfCleanUpLocation> cleanUpLocations = new ArrayList<PdfCleanUpLocation>();
     private PdfStamper stamper;
+
+    public String getNomFichierProduit() {
+        return nomFichierProduit;
+    }
+
+    private String nomFichierProduit;
 
     public PdfReader getLecteurPdf() {
         return lecteurPdf;
@@ -37,13 +46,17 @@ class Clicesiplus {
 
     Clicesiplus(String nomFichier) throws IOException, DocumentException {
         BaseFont bf = BaseFont.createFont("C:\\Windows\\Fonts\\arial.ttf", BaseFont.WINANSI, BaseFont.EMBEDDED);
+        this.arial4 = new Font(bf,4);
         this.arial6 = new Font(bf, 6);
         this.arial8 = new Font(bf,8);
+        this.arial10 = new Font(bf,10);
         bf = BaseFont.createFont("C:\\Windows\\Fonts\\OCR-B10BT.TTF", BaseFont.WINANSI, BaseFont.EMBEDDED);
         this.ocr10 = new Font(bf, 10);
         this.lecteurPdf = new PdfReader(nomFichier);
         this.nbTotalPages = lecteurPdf.getNumberOfPages();
-        this.stamper = new PdfStamper(lecteurPdf, new FileOutputStream(nomFichier.replaceAll(".pdf$", "_ClicEsi.pdf")));
+        this.nomFichierProduit = nomFichier.replaceAll(".pdf$", "_ClicEsi.pdf");
+        this.stamper = new PdfStamper(lecteurPdf, new FileOutputStream(nomFichierProduit));
+        marqueFichier();
     }
 
     String[] getAdresse(String adresse, PageAModifier page) throws IOException {
@@ -86,11 +99,39 @@ class Clicesiplus {
         }
     }
 
+    void placeDate(Map<String,Float> placeDate, int ipage) {
+        PdfContentByte canvas = stamper.getOverContent(ipage);
+        Date now = Calendar.getInstance().getTime();
+        ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT,
+                new Phrase(new SimpleDateFormat("dd/MM/yyyy").format(now),arial10), placeDate.get("x"), placeDate.get("y"),0);
+    }
+
+    private void marqueFichier() {
+        PdfContentByte canvas = stamper.getUnderContent(1);
+        ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT,
+                new Phrase(".",arial4),5f,837f,0);
+    }
+
     void diese(int ipage) {
         PdfContentByte canvas = stamper.getOverContent(ipage);
         ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT,
                 new Phrase("###", arial6),28.4f, 28.76f, 0);
     }
+
+    void placeSignature(Map<String,Float> placeSignature, boolean isAvecGrade, String[] signature, int ipage) {
+        int idep = 1;
+        if(isAvecGrade) {
+            idep = 0;
+        }
+        int inc = 0;
+        PdfContentByte canvas = stamper.getOverContent(ipage);
+        for(int i=idep; i < signature.length; i++) {
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT,
+                    new Phrase(signature[i], arial10), placeSignature.get("x"), placeSignature.get("y") + inc, 0);
+            inc -= 11;
+        }
+    }
+
     void close() throws IOException, DocumentException {
         stamper.close();
         lecteurPdf.close();

@@ -22,16 +22,36 @@ public class TypeDocument {
 
     private Object adresseDest = null;
 
-    public Object getPlaceDate() {
+    public Map<String, Float> getPlaceSignature() {
+        return placeSignature;
+    }
+
+    public void setPlaceSignature(Map<String, Float> placeSignature) {
+        this.placeSignature = placeSignature;
+        this.placeSignature.put("x", this.placeSignature.get("x")*72f/25.4f);
+        this.placeSignature.put("y", 842f - this.placeSignature.get("y")*72f/25.4f);
+    }
+
+    public boolean isAvecGrade() {
+        return avecGrade;
+    }
+
+    public void setAvecGrade(boolean avecGrade) {
+        this.avecGrade = avecGrade;
+    }
+
+    private Map<String,Float> placeSignature = null;
+    private boolean avecGrade = true;
+    private Map<String,Float> placeDate = null;
+    public Map<String,Float> getPlaceDate() {
         return placeDate;
     }
-
-    public void setPlaceDate(Object placeDate) {
+    public void setPlaceDate(Map<String,Float> placeDate) {
         this.placeDate = placeDate;
+        this.placeDate.put("x", this.placeDate.get("x")*72f/25.4f);
+        this.placeDate.put("y", 842f - this.placeDate.get("y")*72f/25.4f);
+
     }
-
-    private Object placeDate = null;
-
 
     public Object getAdresseExp() {
         return adresseExp;
@@ -199,7 +219,6 @@ public class TypeDocument {
     private String chaineService = null;
     private boolean plusieursPages = false;
     private boolean pageImpaire = true;
-
 
     public String getVersoInsere() {
         return versoInsere;

@@ -31,26 +31,15 @@ public class TypeActe {
         this.maxPages = maxPages;
     }
 
-    //public String[] getListeNomsTypesDocument() {
-    //    return listeNomsTypesDocument;
-    //}
+    public boolean isClicEsiPlus() {
+        return clicEsiPlus;
+    }
 
-    //public void setListeNomsTypesDocument(String[] listeNomsTypesDocument) {
-    //    this.listeNomsTypesDocument = listeNomsTypesDocument;
-    //}
+    public void setClicEsiPlus(boolean clicEsiPlus) {
+        this.clicEsiPlus = clicEsiPlus;
+    }
 
-    //public List<TypeDocument> getTypesOrdonnes() {
-    //    return typesOrdonnes;
-    //}
-
-    //public void setTypesOrdonnes(List<TypeDocument> typesOrdonnes) {
-    //    this.typesOrdonnes = typesOrdonnes;
-    //}
-
-
-
-
-
+    private boolean clicEsiPlus = true;
     public static Map<String, TypeActe> getDico() {
         return dico;
     }

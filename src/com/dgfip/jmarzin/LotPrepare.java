@@ -44,52 +44,64 @@ public class LotPrepare {
         return listeFichiers;
     }
 
-    void clicEsi(String nomFichier, int numeroMethode, List<PageAModifier> pages) throws IOException, DocumentException {
-        if (numeroMethode == 1) {
-            String[] commande = new String[]{"C:\\Program Files\\LibreOffice 4\\program\\sdraw",
-                    nomFichier,
-                    "macro:///Standard.ClicEsi.ClicEsiPlus()"};
-            Runtime runtime = Runtime.getRuntime();
-            try {
-                Process process = runtime.exec(commande);
-                process.waitFor();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Clicesiplus clic = new Clicesiplus(nomFichier);
+    void libreOffice(String nomFichier) {
+        String[] commande = new String[]{"C:\\Program Files\\LibreOffice 4\\program\\sdraw",
+                nomFichier,
+                "macro:///Standard.ClicEsi.ClicEsiPlus()"};
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process process = runtime.exec(commande);
+            process.waitFor();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        File fichier = new File(nomFichier);
+        if (!fichier.delete()) log(String.format("Suppression de %s impossible", fichier.getName()));
+    }
 
-            for (PageAModifier page : pages) {
-                int i = page.getIpage();
-                String[] texte1 = null;
-                String[] texte2 = null;
-                jLabel.setText(String.format("Fichier %s, pages converties : %d/%d",
-                        nomFichier.substring(nomFichier.lastIndexOf('\\') + 1), i, clic.getNbTotalPages()));
-                //récupérer l'adresse du SIE si nécessaire
-                if (page.getTypeDocument().getRectExp() != null) {
-                    texte1 = clic.getAdresse("Exp", page);
-                    texte1[1] += " - recouvrement";
-                }
-                //récupérer l'adresse du destinataire si nécessaire
-                if (page.getTypeDocument().getRectDest() != null) {
-                    texte2 = clic.getAdresse("Dest", page);
-                }
-                //effacer l'adresse expéditeur si nécessaire
-                if (page.getTypeDocument().isDeleteExp()) clic.deleteAdresse("Exp", page);
-                //effacer l'adresse destinataire si nécessaire
-                if (page.getTypeDocument().isDeleteDest()) clic.deleteAdresse("Dest", page);
-                //replacer l'adresse SIE si nécessaire
-                if (page.getTypeDocument().getRectExp() != null) clic.replaceAdresse("Exp", texte1, i);
-                //replacer l'adresse destinataire
-                if (page.getTypeDocument().getRectDest() != null) clic.replaceAdresse("Dest", texte2, i);
-                //mettre les trois dièses
+    String clicEsi(String nomFichier, List<PageAModifier> pages, String[] signature) throws IOException, DocumentException {
+        Clicesiplus clic = new Clicesiplus(nomFichier);
+        for (PageAModifier page : pages) {
+            int i = page.getIpage();
+            String[] texte1 = null;
+            String[] texte2 = null;
+            jLabel.setText(String.format("Fichier %s, pages converties : %d/%d",
+                    nomFichier.substring(nomFichier.lastIndexOf('\\') + 1), i, clic.getNbTotalPages()));
+            //récupérer l'adresse du SIE si nécessaire
+            if (page.getTypeDocument().getRectExp() != null) {
+                texte1 = clic.getAdresse("Exp", page);
+                texte1[1] += " - recouvrement";
+            }
+            //récupérer l'adresse du destinataire si nécessaire
+            if (page.getTypeDocument().getRectDest() != null) {
+                texte2 = clic.getAdresse("Dest", page);
+            }
+            //effacer l'adresse expéditeur si nécessaire
+            if (page.getTypeDocument().isDeleteExp()) clic.deleteAdresse("Exp", page);
+            //effacer l'adresse destinataire si nécessaire
+            if (page.getTypeDocument().isDeleteDest()) clic.deleteAdresse("Dest", page);
+            //replacer l'adresse SIE si nécessaire
+            if (page.getTypeDocument().getRectExp() != null) clic.replaceAdresse("Exp", texte1, i);
+            //replacer l'adresse destinataire
+            if (page.getTypeDocument().getRectDest() != null) clic.replaceAdresse("Dest", texte2, i);
+            //mettre la date
+            Map<String,Float> placeDate = page.getTypeDocument().getPlaceDate();
+            if (placeDate != null) clic.placeDate(placeDate, i);
+            //mettre la signature
+            Map<String, Float> placeSignature = page.getTypeDocument().getPlaceSignature();
+            if (placeSignature != null) {
+                clic.placeSignature(placeSignature, page.getTypeDocument().isAvecGrade(), signature, i);
+            }
+            //mettre les trois dièses
+            if (page.isRupture()) {
                 clic.diese(i);
             }
-            clic.close();
-            File fichier = new File(nomFichier);
-            if (!fichier.delete()) log(String.format("Suppression de %s impossible", fichier.getName()));
         }
+        clic.close();
+        File fichier = new File(nomFichier);
+        if (!fichier.delete()) log(String.format("Suppression de %s impossible", fichier.getName()));
+        return clic.getNomFichierProduit();
     }
 }

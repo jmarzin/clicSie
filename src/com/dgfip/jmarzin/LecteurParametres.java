@@ -28,6 +28,18 @@ public class LecteurParametres {
     }
 
     LecteurParametres(String nomRepertoire) throws UnsupportedEncodingException {
+        String[] lignes;
+        try {
+            lignes = UtileFichier.lit(nomRepertoire + File.separator + "ClicSie.params");
+            if (lignes == null) {
+                erreur = true;
+                return;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            erreur = true;
+            return;
+        }
         File fichierParametres = null;
         fichierParametres = new File(nomRepertoire + File.separator + "ClicSie.params");
         if (fichierParametres.exists()){

@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -92,17 +93,14 @@ public class ClicSie {
             System.exit(0);
         }
 
-        //Transformation clic'esi ou pas
-        Object[] options = {"Aucune", "ClicEsiPlus"};
-        int n = JOptionPane.showOptionDialog(pan,
-                "Choisissez la transformation à appliquer",
-                "Transformation",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,     //do not use a custom Icon
-                options,  //the titles of buttons
-                options[0]); //default button title
-        boolean clicEsi = (n == 1);
+        //vérification de la présence du fichier des signatures
+        if(repATraiter.isSignatureNecessaire() && repATraiter.getSignature() == null) {
+            JOptionPane.showMessageDialog(null,
+                    "Le fichier signature.text est absent.",
+                    "Erreur",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
 
         //ouvrir le fichier de log
         String fichierLog = repATraiter.getRepertoire().getAbsolutePath() +
@@ -157,26 +155,33 @@ public class ClicSie {
         }
 
         //Appel de clic'esi plus
-        if(clicEsi){
-            for (String nomFichier: listeFichiers.keySet()) {
+        Map<String, TypeActe> listeFichiers2 = new HashMap<String, TypeActe>();
+        for (String nomFichier: listeFichiers.keySet()) {
+            TypeActe typeActe = listeFichiers.get(nomFichier).get(0).getTypeDocument().getTypeActe();
+            if (typeActe.isClicEsiPlus()) {
                 jLabel.setText(String.format("Transformation du fichier %s", nomFichier));
-                int numeroMethode;
-                if(listeFichiers.get(nomFichier).get(0).getTypeDocument().getTypeActe().isUtiliseLO()) {
-                    numeroMethode = 1;
-                } else {
-                    numeroMethode = 2;
-                }
                 try {
-                    lotPrepare.clicEsi(nomFichier, numeroMethode,listeFichiers.get(nomFichier));
+                    String nomFichier2 = lotPrepare.clicEsi(nomFichier, listeFichiers.get(nomFichier),repATraiter.getSignature());
+                    listeFichiers2.put(nomFichier2, typeActe);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (DocumentException e) {
                     e.printStackTrace();
                 }
+            } else {
+                listeFichiers2.put(nomFichier, typeActe);
             }
         }
+
+        //Appel de Libre Office
+        for (String nomFichier: listeFichiers2.keySet()) {
+            if (listeFichiers2.get(nomFichier).isUtiliseLO()) {
+                jLabel.setText(String.format("Envoi du fichier %s à LibreOffice", nomFichier));
+                lotPrepare.libreOffice(nomFichier);
+            }
+        }
+
         log("Fin du traitement");
         jLabel.setText("Traitement terminé, consultez le compte-rendu ci-dessous.");
     }
-
 }

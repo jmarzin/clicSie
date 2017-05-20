@@ -3,7 +3,11 @@ package com.dgfip.jmarzin;
 import com.itextpdf.text.pdf.PdfReader;
 
 import javax.swing.*;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +33,18 @@ class RepertoireATraiter {
         }
         return false;
     }
+
+    boolean isSignatureNecessaire() {
+        return signatureNecessaire;
+    }
+
+    public String[] getSignature() {
+        return signature;
+    }
+
+    private String[] signature = null;
+
+    private boolean signatureNecessaire = false;
 
     Set<String> verifPresenceVerso() {
         Set<String> listeTypesDocument = new HashSet<String>();
@@ -66,7 +82,15 @@ class RepertoireATraiter {
                 } else {
                     this.fichiersPdf.add(fic);
                     TypeDocument typeFichier = fic.getTypeFichier();
-                    if (!typeFichier.isVerso()) { //;"Verso") {
+                    if (!typeFichier.isVerso()) {
+                        if (typeFichier.getPlaceSignature() != null && typeFichier.getTypeActe().isClicEsiPlus()) {
+                            signatureNecessaire = true;
+                            try {
+                                this.signature = UtileFichier.lit(repertoire.getCanonicalFile() + File.separator + "signature.txt");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                         this.fichiersADeplacer.add(listeFichiers[i].getName());
                     }
                 }

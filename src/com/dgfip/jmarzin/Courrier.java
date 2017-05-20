@@ -84,6 +84,7 @@ class Courrier {
                                            PdfSmartCopy copy,
                                            String nomFichier) throws DocumentException, IOException {
         assert aImprimer;
+        boolean rupture = true;
         TypeDocument[] typesDoc = typeActe.typeCourriersOrdonnes();
         for (int i = 0; i < typesDoc.length; i++) {
             TypeDocument typedoc = typesDoc[i];
@@ -108,10 +109,11 @@ class Courrier {
                     if (j == 0 && typedoc.isPageImpaire() && (copy.getPageNumber() % 2) == 0)
                         copy.addPage(PageSize.A4, 0);
                     copy.addPage(pageOriginale);
-                    boolean rupture = (i == 0);
-                    if(rupture || (j == 0 && (typedoc.getRectDest() != null || typedoc.getRectExp() != null))) {
+                    if(rupture || (j == 0 && (typedoc.getRectDest() != null || typedoc.getRectExp() != null ||
+                            typedoc.getPlaceDate() != null || typedoc.getPlaceSignature() != null))) {
                         listeFichiers.get(nomFichier).add(new PageAModifier(copy.getPageNumber() - 1, typedoc, rupture));
                     }
+                    rupture = false;
                     if (typedoc.getVersoInsere() != null) {
                         if (versoPdf == null) {
                             copy.addPage(PageSize.A4, 0);
