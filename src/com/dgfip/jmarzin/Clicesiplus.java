@@ -171,7 +171,6 @@ class Clicesiplus {
             }
         }
     }
-
     /**
      * Place la date du jour sur la page indiquée
      * @param placeDate place de la date sur la page

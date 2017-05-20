@@ -38,7 +38,7 @@ class FichierPdfATraiter {
             Matcher matcher = pattern.matcher(chaine);
             if(matcher.matches()) {
                 this.typeFichier = typeDocument;
-                if(typeFichier.getTypeActe() != null) ClicSie.addEnsembleEvenements(typeFichier.getTypeActe());
+                //if(typeFichier.getTypeActe() != null) ClicSie.addEnsembleEvenements(typeFichier.getTypeActe());
                 break;
             }
         }

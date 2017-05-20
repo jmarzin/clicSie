@@ -27,7 +27,7 @@ public class LecteurParametres {
     LecteurParametres() {
     }
 
-    LecteurParametres(String nomRepertoire) throws UnsupportedEncodingException {
+    LecteurParametres(String nomRepertoire) {
         String[] lignes;
         try {
             lignes = UtileFichier.lit(nomRepertoire + File.separator + "ClicSie.params");
@@ -49,6 +49,10 @@ public class LecteurParametres {
                         new InputStreamReader(
                                 new FileInputStream(fichierParametres),"UTF-8"));
             } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                erreur = true;
+                return;
+            } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
                 erreur = true;
                 return;

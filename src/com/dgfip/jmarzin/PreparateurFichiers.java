@@ -24,7 +24,7 @@ class PreparateurFichiers {
         return cle.replaceAll(" ", "");
     }
 
-    PreparateurFichiers(RepertoireATraiter repertoireATraiter) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    PreparateurFichiers(RepertoireATraiter repertoireATraiter) {
         this.lotPrepare = new LotPrepare();
         int nbFichiers = repertoireATraiter.getFichiersPdf().size();
         int iFichiers = 1;

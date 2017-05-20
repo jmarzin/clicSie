@@ -6,35 +6,53 @@ import com.itextpdf.text.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ClicSie {
-
-    private static Set<TypeActe> ensembleEvenements = new HashSet<TypeActe>();
-    static Set<TypeActe> getEnsembleEvenements() {
-        return ensembleEvenements;
-    }
-    static void addEnsembleEvenements(TypeActe typeActe) {
-        ensembleEvenements.add(typeActe);
-    }
-
-    //limite de pages
+    /**
+     * Champ public permettant d'afficher l'étape du traitement
+     */
     static JLabel jLabel = new JLabel("Demande du répertoire"); // champ d'affichage des étapes
+    /**
+     * Zone d'affichage de la log à l'écran
+     */
     private static JTextArea display = new JTextArea(16, 60);  // champ d'affichage de la log
 
+    /**
+     * Affiche un texte dans la log et sur la sortie par défaut
+     * @param texte le texte à afficher
+     */
     static void log(String texte) {
         System.out.println(texte);
         display.setText(display.getText()+texte+"\n");
     }
 
-    public static void main(String[] args) throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-
-        //fenêtre de suivi
+    /**
+     * Corps du traitement
+     * Il réalise en séquence les opérations suivantes :
+     *  - initialise la fenêtre de suivi
+     *  - initialise le groupe date-heure utilisé pour les fichiers
+     *  - demande à l'utilisateur le répertoire à traiter
+     *  - vérifie et charge le fichier des paramètres
+     *  - identifie les fichiers à traiter et ceux à déplacer à la fin
+     *  - vérifie la présence des versos éventuellement nécessaires
+     *  - vérifie la présence du fichier de signature s'il est nécessaire
+     *  - ouvre le fichier de log (ClicSie__CR_...)
+     *  - explore les fichiers à traiter et prépare le lot à écrire
+     *  - écrit les fichiers à partir du lot préparé
+     *  - ferme les fichiers à traiter
+     *  - déplace les fichiers à déplacer dans le ss/répertoire
+     *      dejaTraites
+     *  - met au format ClicEsiPlus les fichiers qui le nécessitent
+     *  - transmet à LibreOffice les fichiers qui le nécessitent
+     * @author Jacques Marzin
+     * @since 20 mai 2017
+     */
+    public static void main(String[] args) {
+        //Initialisation de la fenêtre de suivi
         JFrame fenetre = new JFrame();
         fenetre.setTitle("Traitement des preparateurFichiers d'ATD");
         fenetre.setSize(700, 350);
@@ -52,20 +70,17 @@ public class ClicSie {
         JScrollPane scroll = new JScrollPane(display);
         display.setAlignmentX(Component.CENTER_ALIGNMENT);
         pan.add(scroll);
-
-        //Date-heure
+        //Initialisation de la date et de l'heure utilisées dans les noms de fichiers créés
         Date now = Calendar.getInstance().getTime();
         SimpleDateFormat formatDateHeure = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-SSS");
         String dateHeure = formatDateHeure.format(now);
-
-        //Choix du répertoire
+        //Choix du répertoire contenant les fichiers à traiter
         final JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int returnVal = fc.showOpenDialog(pan);
         if(returnVal != JFileChooser.APPROVE_OPTION) {
             System.exit(0);
         }
-
         //Vérification et chargement du fichier des paramètres
         LecteurParametres lecteurParametres = new LecteurParametres(fc.getSelectedFile().getAbsolutePath());
         if(lecteurParametres.isErreur()) {
@@ -75,16 +90,15 @@ public class ClicSie {
                     JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
-
-        //Identification des fichiers PDF
+        //Identification des fichiers PDF à traiter et à déplacer en fin
+        //de traitements
         RepertoireATraiter repATraiter = new RepertoireATraiter(fc);
-
         //Vérification de la présence des versos nécessaires
         Set<String> nomVersosManquants = repATraiter.verifPresenceVerso();
         if(!nomVersosManquants.isEmpty()) {
-            String message = "";
+            StringBuilder message = new StringBuilder();
             for(String verso : nomVersosManquants) {
-                message += " " + verso;
+                message.append(" ").append(verso);
             }
             JOptionPane.showMessageDialog(null,
                     "Le ou les fichiers verso "+ message+ " sont absents.",
@@ -92,7 +106,6 @@ public class ClicSie {
                      JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
-
         //vérification de la présence du fichier des signatures
         if(repATraiter.isSignatureNecessaire() && repATraiter.getSignature() == null) {
             JOptionPane.showMessageDialog(null,
@@ -101,10 +114,9 @@ public class ClicSie {
                     JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
-
-        //ouvrir le fichier de log
+        //ouvrir le fichier des log
         String fichierLog = repATraiter.getRepertoire().getAbsolutePath() +
-                File.separator + "atdSie__CR_" + dateHeure + ".txt";
+                File.separator + "ClicSie__CR_" + dateHeure + ".txt";
         try {
             PrintStream stream = new PrintStream(fichierLog);
             System.setOut(stream);
@@ -112,13 +124,11 @@ public class ClicSie {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        //Construction des preparateurFichiers
+        //Construction du lot de création de fichiers
         PreparateurFichiers preparateurFichiers = new PreparateurFichiers(repATraiter);
         LotPrepare lotPrepare = preparateurFichiers.getLotPrepare();
-
         //Vérification du lot préparé
         lotPrepare.verif();
-
         //Ecriture des fichiers
         Map<String,List<PageAModifier>> listeFichiers = new HashMap<String, List<PageAModifier>>();
         try {
@@ -128,12 +138,10 @@ public class ClicSie {
         } catch (DocumentException e) {
             e.printStackTrace();
         }
-
         //fermeture des fichiers
         for (FichierPdfATraiter fichier : repATraiter.getFichiersPdf()) {
             fichier.getLecteurPdf().close();
         }
-
         //déplacement des fichiers
         jLabel.setText("Déplacement des fichiers");
         AtomicReference<File> repTraites = new AtomicReference<File>();
@@ -146,15 +154,13 @@ public class ClicSie {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         for(String fichier : repATraiter.getFichiersADeplacer()) {
             String nomOr = repATraiter.getRepertoire().getAbsolutePath() + File.separator + fichier;
             String nomDest = repATraiter.getRepertoire().getAbsolutePath() + File.separator +
                     "dejaTraites" + File.separator + fichier;
             if(!new File(nomOr).renameTo(new File(nomDest))) log(String.format("Rename de %s impossible", nomOr));
         }
-
-        //Appel de clic'esi plus
+        //Appel de clic'esi pour les fichiers qui le nécessite
         Map<String, TypeActe> listeFichiers2 = new HashMap<String, TypeActe>();
         for (String nomFichier: listeFichiers.keySet()) {
             TypeActe typeActe = listeFichiers.get(nomFichier).get(0).getTypeDocument().getTypeActe();
@@ -172,15 +178,13 @@ public class ClicSie {
                 listeFichiers2.put(nomFichier, typeActe);
             }
         }
-
-        //Appel de Libre Office
+        //Appel de Libre Office pour les fichiers qui le nécessite
         for (String nomFichier: listeFichiers2.keySet()) {
             if (listeFichiers2.get(nomFichier).isUtiliseLO()) {
                 jLabel.setText(String.format("Envoi du fichier %s à LibreOffice", nomFichier));
                 lotPrepare.libreOffice(nomFichier);
             }
         }
-
         log("Fin du traitement");
         jLabel.setText("Traitement terminé, consultez le compte-rendu ci-dessous.");
     }
