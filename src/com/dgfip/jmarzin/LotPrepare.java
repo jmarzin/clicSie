@@ -4,6 +4,7 @@ import com.itextpdf.text.DocumentException;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.*;
 
 import static com.dgfip.jmarzin.ClicSie.jLabel;
@@ -71,21 +72,21 @@ public class LotPrepare {
                     nomFichier.substring(nomFichier.lastIndexOf('\\') + 1), i, clic.getNbTotalPages()));
             //récupérer l'adresse du SIE si nécessaire
             if (page.getTypeDocument().getRectExp() != null) {
-                texte1 = clic.getAdresse("Exp", page);
+                texte1 = clic.getAdresse(TypeAdresse.Exp, page);
                 texte1[1] += " - recouvrement";
             }
             //récupérer l'adresse du destinataire si nécessaire
             if (page.getTypeDocument().getRectDest() != null) {
-                texte2 = clic.getAdresse("Dest", page);
+                texte2 = clic.getAdresse(TypeAdresse.Dest, page);
             }
             //effacer l'adresse expéditeur si nécessaire
-            if (page.getTypeDocument().isDeleteExp()) clic.deleteAdresse("Exp", page);
+            if (page.getTypeDocument().isDeleteExp()) clic.deleteAdresse(TypeAdresse.Exp, page);
             //effacer l'adresse destinataire si nécessaire
-            if (page.getTypeDocument().isDeleteDest()) clic.deleteAdresse("Dest", page);
+            if (page.getTypeDocument().isDeleteDest()) clic.deleteAdresse(TypeAdresse.Dest, page);
             //replacer l'adresse SIE si nécessaire
-            if (page.getTypeDocument().getRectExp() != null) clic.replaceAdresse("Exp", texte1, i);
+            if (page.getTypeDocument().getRectExp() != null) clic.replaceAdresse(TypeAdresse.Exp, texte1, i);
             //replacer l'adresse destinataire
-            if (page.getTypeDocument().getRectDest() != null) clic.replaceAdresse("Dest", texte2, i);
+            if (page.getTypeDocument().getRectDest() != null) clic.replaceAdresse(TypeAdresse.Dest, texte2, i);
             //mettre la date
             Map<String,Float> placeDate = page.getTypeDocument().getPlaceDate();
             if (placeDate != null) clic.placeDate(placeDate, i);
