@@ -2,7 +2,6 @@ package com.dgfip.jmarzin;
 
 
 import com.itextpdf.text.*;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -20,7 +19,6 @@ public class ClicSie {
      * Zone d'affichage de la log à l'écran
      */
     private static JTextArea display = new JTextArea(16, 60);  // champ d'affichage de la log
-
     /**
      * Affiche un texte dans la log et sur la sortie par défaut
      * @param texte le texte à afficher
@@ -29,7 +27,6 @@ public class ClicSie {
         System.out.println(texte);
         display.setText(display.getText()+texte+"\n");
     }
-
     /**
      * Corps du traitement
      * Il réalise en séquence les opérations suivantes :

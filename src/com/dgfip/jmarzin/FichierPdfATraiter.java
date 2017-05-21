@@ -7,14 +7,33 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Cette classe représente un fichier pdf à traiter
+ *
+ * @author Jacques Marzin
+ * @version 1.0
+ * @since 20 mai 2017
+ */
 class FichierPdfATraiter {
-
+    /**
+     * Le lecteur Itext du fichier
+     */
     private PdfReader lecteurPdf;
     PdfReader getLecteurPdf() { return lecteurPdf;}
 
+    /**
+     * Le type de document du fichier
+     * @see TypeDocument
+     */
     private TypeDocument typeFichier;
     TypeDocument getTypeFichier() { return typeFichier;}
-
+    /**
+     * Le texte contenu dans la page indiqué
+     * du fichier pdf.
+     *
+     * @param page le rang de la page demandée
+     * @return le texte contenu
+     */
     String getChaine(int page) {
         String chaine = "";
         try {
@@ -24,7 +43,15 @@ class FichierPdfATraiter {
         }
         return chaine;
     }
-
+    /**
+     * Constructeur d'une instance de fichier
+     * pdf à traiter
+     * Le type de document qu'il contient est
+     * identifié grâce à une chaîne de caractère
+     * avec joker (regex)
+     *
+     * @param fichier le fichier à représenter
+     */
     FichierPdfATraiter(File fichier) {
         try {
             this.lecteurPdf = new PdfReader(fichier.getAbsolutePath());
@@ -38,7 +65,6 @@ class FichierPdfATraiter {
             Matcher matcher = pattern.matcher(chaine);
             if(matcher.matches()) {
                 this.typeFichier = typeDocument;
-                //if(typeFichier.getTypeActe() != null) ClicSie.addEnsembleEvenements(typeFichier.getTypeActe());
                 break;
             }
         }

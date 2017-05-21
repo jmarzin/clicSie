@@ -131,8 +131,8 @@ class Courrier {
      * @param nomFichier nom du fichier à écrire
      * @return dictionnaires des pages à modifier mis à jour des
      * nouvelles pages écrites
-     * @throws DocumentException Pb d'ajout de page
-     * @throws IOException Pb d'ajout d'une page lue
+     * @throws DocumentException Pb d'écriture de page
+     * @throws IOException Pb d'écriture d'une page lue
      */
     Map<String, List<PageAModifier>> ecrit(Map<String, List<PageAModifier>> listeFichiers,
                                            RepertoireATraiter repertoireATraiter,

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Cette classeContenus représente un document administratif de base.
+ * Cette classe représente un document administratif de base.
  *
  * @author jmarzin-cp
  * @since 12/05/2017
