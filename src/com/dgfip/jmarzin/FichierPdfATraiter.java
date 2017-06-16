@@ -16,6 +16,13 @@ import java.util.regex.Pattern;
  */
 class FichierPdfATraiter {
     /**
+     * Le répertoire où se trouve le fichier
+     */
+    private RepertoireATraiter repertoireATraiter;
+    RepertoireATraiter getRepertoireATraiter() {
+        return repertoireATraiter;
+    }
+    /**
      * Le lecteur Itext du fichier
      */
     private PdfReader lecteurPdf;
@@ -28,7 +35,7 @@ class FichierPdfATraiter {
     private TypeDocument typeFichier;
     TypeDocument getTypeFichier() { return typeFichier;}
     /**
-     * Le texte contenu dans la page indiqué
+     * Le texte contenu dans la page indiquée
      * du fichier pdf.
      *
      * @param page le rang de la page demandée
@@ -52,7 +59,7 @@ class FichierPdfATraiter {
      *
      * @param fichier le fichier à représenter
      */
-    FichierPdfATraiter(File fichier) {
+    FichierPdfATraiter(RepertoireATraiter repertoireATraiter, File fichier) {
         try {
             this.lecteurPdf = new PdfReader(fichier.getAbsolutePath());
         } catch (IOException e) {
@@ -60,6 +67,7 @@ class FichierPdfATraiter {
         }
         String chaine = this.getChaine(1);
         this.typeFichier = null;
+        this.repertoireATraiter = repertoireATraiter;
         for(TypeDocument typeDocument : TypeDocument.values()) {
             Pattern pattern = Pattern.compile(typeDocument.getChaineType(), Pattern.MULTILINE | Pattern.DOTALL);
             Matcher matcher = pattern.matcher(chaine);

@@ -1,7 +1,9 @@
 package com.dgfip.jmarzin;
 
 /**
- * Created by jacquesmarzin on 20/05/2017.
+ * Cette énumération gère les différents types
+ * d'adresse qui figurent dans un document, celle
+ * de l'expéditeur et celle du destinataire
  */
 public enum TypeAdresse {
     Exp,Dest

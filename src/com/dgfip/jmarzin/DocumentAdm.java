@@ -12,6 +12,13 @@ import java.util.List;
  */
 class DocumentAdm {
     /**
+     * Le répertoire où a été trouvé le document
+     */
+    private RepertoireATraiter repertoireATraiter;
+    RepertoireATraiter getRepertoireATraiter() {
+        return repertoireATraiter;
+    }
+    /**
      * Le type de fichier produit auquel le document appartient
      * @see TypeFichierProduit
      */
@@ -50,7 +57,7 @@ class DocumentAdm {
     }
     /**
      * La liste des pages du documents
-     * @see PageLue, #getPages()
+     * @see PageLue
      */
     private List<PageLue> pages;
     List<PageLue> getPages() {
@@ -78,7 +85,8 @@ class DocumentAdm {
      * Constructeur d'un document vide du type fourni
      * @param typeDocument type du document
      */
-    DocumentAdm (TypeDocument typeDocument) {
+    DocumentAdm (RepertoireATraiter repertoireATraiter, TypeDocument typeDocument) {
+        this.repertoireATraiter = repertoireATraiter;
         this.typeDocument = typeDocument;
         this.typeActe = typeDocument.getTypeActe();
         this.pages = new ArrayList<PageLue>();

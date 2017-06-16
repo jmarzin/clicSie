@@ -4,7 +4,6 @@ import com.itextpdf.text.DocumentException;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.*;
 
 import static com.dgfip.jmarzin.ClicSie.jLabel;
@@ -117,11 +116,15 @@ class LotPrepare {
             if (page.getTypeDocument().getRectDest() != null) {
                 texte2 = clic.getAdresse(TypeAdresse.Dest, page);
             }
-            //effacer l'adresse expéditeur si nécessaire
-            if (page.getTypeDocument().isDeleteExp()) clic.deleteAdresse(TypeAdresse.Exp, page);
-            //effacer l'adresse destinataire si nécessaire
-            if (page.getTypeDocument().isDeleteDest()) clic.deleteAdresse(TypeAdresse.Dest, page);
-            //replacer l'adresse SIE si nécessaire
+            //prépare l'effacement de l'adresse expéditeur si nécessaire
+            if (page.getTypeDocument().isDeleteExp()) clic.deleteAdresse(TypeAdresse.Exp, page, 1);
+            //prépare l'effacement de l'adresse destinataire si nécessaire
+            if (page.getTypeDocument().isDeleteDest()) clic.deleteAdresse(TypeAdresse.Dest, page, 1);
+            //efface la ou les adresses si nécessaire
+            if (page.getTypeDocument().isDeleteDest() || page.getTypeDocument().isDeleteExp()) {
+                clic.deleteAdresse(null, null, 2);
+            }
+            //replacer l'adresse expéditeur si nécessaire
             if (page.getTypeDocument().getRectExp() != null) clic.replaceAdresse(TypeAdresse.Exp, texte1, i);
             //replacer l'adresse destinataire
             if (page.getTypeDocument().getRectDest() != null) clic.replaceAdresse(TypeAdresse.Dest, texte2, i);
@@ -131,7 +134,8 @@ class LotPrepare {
             //mettre la signature
             Map<String, Float> placeSignature = page.getTypeDocument().getPlaceSignature();
             if (placeSignature != null) {
-                clic.placeSignature(placeSignature, page.getTypeDocument().isAvecGrade(), signature, i);
+                clic.placeSignature(placeSignature, page.getTypeDocument().isAvecGrade(),
+                        page.getRepertoireATraiter().getSignature(), i);
             }
             //mettre les trois dièses
             if (page.isRupture()) {

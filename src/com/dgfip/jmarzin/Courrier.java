@@ -12,11 +12,9 @@ import java.util.Map;
 import static com.dgfip.jmarzin.ClicSie.log;
 
 /**
- * Cette classeContenus représente un courrier administratif de base.
- *
+ * Cette classe représente un courrier administratif de base.
  * Il peut contenir plusieurs documents relevant du même acte
  * et possédant la même valeur de clé
- *
  * @author jmarzin-cp
  * @since 12/05/2017
  * @version 1.0
@@ -152,7 +150,6 @@ class Courrier {
             if (dicoTypesDocument.containsKey(typedoc)) {
                 DocumentAdm documentAdm = dicoTypesDocument.get(typedoc);
                 List<PageLue> pagesLues = documentAdm.getPages();
-
                 for (int j = 0; j < pagesLues.size(); j++) {
                     PageLue pageLue = pagesLues.get(j);
                     //Récupère la rotation actuelle de la page pour tourner la page correctement
@@ -172,7 +169,8 @@ class Courrier {
                     //Identifie s'il faudra modifier la page en fonction du type de document
                     if (rupture || (j == 0 && (typedoc.getRectDest() != null || typedoc.getRectExp() != null ||
                             typedoc.getPlaceDate() != null || typedoc.getPlaceSignature() != null))) {
-                        listeFichiers.get(nomFichier).add(new PageAModifier(copy.getPageNumber() - 1, typedoc, rupture));
+                        listeFichiers.get(nomFichier).add(new PageAModifier(copy.getPageNumber() - 1,
+                                typedoc, rupture, documentAdm.getRepertoireATraiter()));
                     }
                     rupture = false; // les pages suivantes du courrier ne doivent pas être marquées ###
                     //Insère le verso si nécessaire

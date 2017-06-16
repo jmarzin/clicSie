@@ -1,13 +1,10 @@
 package com.dgfip.jmarzin;
 
-import com.itextpdf.text.Rectangle;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Cette classe représente un lecteur de fichier de
@@ -39,15 +36,7 @@ class LecteurParametres {
      * @param objetAdresse l'objet adresse lu
      * @return le rectangle construit
      */
-    private Rectangle creeRectangle(Object objetAdresse) {
-        if (objetAdresse == null) return null;
-        LinkedHashMap<String, LinkedHashMap<String, Double>> adresse =
-                (LinkedHashMap<String, LinkedHashMap<String, Double>>) objetAdresse;
-        return new Rectangle(adresse.get("basGauche").get("x").floatValue()*72f/25.4f,
-                842f - adresse.get("basGauche").get("y").floatValue()*72f/25.4f,
-                adresse.get("hautDroite").get("x").floatValue()*72f/25.4f,
-                842f - adresse.get("hautDroite").get("y").floatValue()*72f/25.4f);
-    }
+
     /**
      * Construit le lecteur de paramètres.
      * Les lignes sont lues dans un tableau,
@@ -64,7 +53,7 @@ class LecteurParametres {
         //lecture du fichier des paramètres
         String[] lignes = null;
         try {
-            lignes = UtileFichier.lit(nomRepertoire + File.separator + "ClicSie.params");
+            lignes = Utilitaires.lit(nomRepertoire + File.separator + "ClicSie.params");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -90,15 +79,15 @@ class LecteurParametres {
         for(String instance : parametres) {
             Object objet = yaml.load(instance);
             if(objet.getClass() == TypeActe.class) {
-                TypeActe cT = (TypeActe) objet;
-                Map<String, TypeActe> dicoA = TypeActe.getDico();
-                dicoA.put(cT.getNom(), cT);
+            //    TypeActe cT = (TypeActe) objet;
+            //    Map<String, TypeActe> dicoA = TypeActe.getDico();
+            //    dicoA.put(cT.getNom(), cT);
             } else {
                 TypeDocument cT = (TypeDocument) objet;
-                cT.setRectDest(creeRectangle(cT.getAdresseDest()));
-                cT.setRectExp(creeRectangle(cT.getAdresseExp()));
-                Map<String, TypeDocument> dicoD = TypeDocument.getDico();
-                dicoD.put(cT.getNom(), cT);
+                //cT.setRectDest(creeRectangle(cT.getAdresseDest()));
+                //cT.setRectExp(creeRectangle(cT.getAdresseExp()));
+                //Map<String, TypeDocument> dicoD = TypeDocument.getDico();
+                //dicoD.put(cT.getNom(), cT);
             }
         }
     }

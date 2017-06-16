@@ -101,7 +101,7 @@ class Clicesiplus {
         this.ocr10 = new Font(bf, 10);
         this.lecteurPdf = new PdfReader(nomFichier);
         this.nbTotalPages = lecteurPdf.getNumberOfPages();
-        this.nomFichierProduit = nomFichier.replaceAll(".pdf$", "_ClicEsi.pdf");
+        this.nomFichierProduit = nomFichier.replaceAll(".pdf$", "_ClicPlus.pdf");
         this.stamper = new PdfStamper(lecteurPdf, new FileOutputStream(nomFichierProduit));
         marqueFichier();
     }
@@ -131,12 +131,15 @@ class Clicesiplus {
      * @throws IOException problème au moment de la suppression
      * @throws DocumentException problème au moment de la suppression
      */
-    void deleteAdresse(TypeAdresse typeAdresse, PageAModifier page) throws IOException, DocumentException {
-        Rectangle rect = (typeAdresse == TypeAdresse.Exp) ? page.getTypeDocument().getRectExp() : page.getTypeDocument().getRectDest();
-        cleanUpLocations.add(new PdfCleanUpLocation(page.getIpage(),rect));
-        PdfCleanUpProcessor cleaner = new PdfCleanUpProcessor(cleanUpLocations,stamper);
-        cleaner.cleanUp();
-        cleanUpLocations.clear();
+    void deleteAdresse(TypeAdresse typeAdresse, PageAModifier page, int etape) throws IOException, DocumentException {
+        if (etape == 1) {
+            Rectangle rect = (typeAdresse == TypeAdresse.Exp) ? page.getTypeDocument().getRectExp() : page.getTypeDocument().getRectDest();
+            cleanUpLocations.add(new PdfCleanUpLocation(page.getIpage(), rect));
+        } else {
+            PdfCleanUpProcessor cleaner = new PdfCleanUpProcessor(cleanUpLocations, stamper);
+            cleaner.cleanUp();
+            cleanUpLocations.clear();
+        }
     }
     /**
      * Replace l'adresse fournie à l'endroit déterminé
